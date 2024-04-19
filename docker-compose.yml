@@ -7,6 +7,16 @@ services:
       - featurehub-h2-data:/db
     ports:
       - "8085:8085"
+  Test:
+    image: test
+    build:
+      context: .
+      dockerfile: test/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - featurehub
+
     
 volumes:
   featurehub-h2-data:
