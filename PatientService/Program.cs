@@ -1,5 +1,5 @@
+
 using Microsoft.EntityFrameworkCore;
-using PatientService.DataAccess;
 using PatientService.DataAccess.Interfaces;
 using PatientService.DataAccess.Repositories;
 using PatientService.Services.Interface;
@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.MapControllers();
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
