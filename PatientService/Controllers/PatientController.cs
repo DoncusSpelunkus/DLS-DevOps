@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PatientService.Services.Interface;
+using PatientServices;
 
 [ApiController]
 [Route("[controller]")]

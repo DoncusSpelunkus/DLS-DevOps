@@ -1,8 +1,9 @@
-﻿using PatientService.Services.Interface;
-
-namespace PatientService.Services;
+﻿namespace PatientServices;
 
 public class PatientService : IPatientService
 {
-    
+    public string GetPatientName()
+    {
+        return "John Doe";
+    }
 }

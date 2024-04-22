@@ -1,6 +1,6 @@
 ﻿using DefaultNamespace;
 
-namespace PatientService.DataAccess.Interfaces;
+namespace PatientRepositories;
 
 public interface IPatientRepository
 {

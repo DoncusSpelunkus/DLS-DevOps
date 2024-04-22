@@ -6,7 +6,7 @@ RUN dotnet restore "XunitTest/XunitTest.csproj"
 COPY . .
 WORKDIR "/src/XunitTest"
 
-RUN build as Publish
+FROM build as publish
 RUN dotnet publish "XunitTest.csproj" -c Release -o /app/publish
 
 FROM build as final

@@ -1,8 +1,7 @@
 ﻿using DefaultNamespace;
 using Microsoft.EntityFrameworkCore;
-using PatientService.DataAccess.Interfaces;
 
-namespace PatientService.DataAccess.Repositories;
+namespace PatientRepositories;
 
 public class PatientRepository : IPatientRepository
 {
