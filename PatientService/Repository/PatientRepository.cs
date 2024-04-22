@@ -26,11 +26,26 @@ public class PatientRepository : IPatientRepository
         }
     }
 
-    public async Task Delete(int id)
+    public async Task<Patient?> GetPatientById(string id)
     {
         try
         {
-            var patient = await _patientDbContext.PatientsTable!.FindAsync(id) ?? throw new KeyNotFoundException("No such post found");
+            var patient = await _patientDbContext.PatientsTable!.FindAsync(id) ?? throw new KeyNotFoundException("No such patient found");
+            return patient;
+
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Something went wrong when deleting Patients with id: " +id + e.Message);
+            
+        }
+    }
+
+    public async Task Delete(string id)
+    {
+        try
+        {
+            var patient = await _patientDbContext.PatientsTable!.FindAsync(id) ?? throw new KeyNotFoundException("No such patient found");
             _patientDbContext.PatientsTable.Remove(patient);
             await _patientDbContext.SaveChangesAsync();
             
@@ -63,6 +78,7 @@ public class PatientRepository : IPatientRepository
         }
     }
 
+    
     public async Task<List<Patient>> GetAllPatients()
     {
         try
@@ -77,7 +93,15 @@ public class PatientRepository : IPatientRepository
     
     public void RebuildDb()
     {
-        _patientDbContext.Database.EnsureDeleted();
-        _patientDbContext.Database.EnsureCreated();
+        try
+        {
+            _patientDbContext.Database.EnsureDeleted();
+            _patientDbContext.Database.EnsureCreated();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+
     }
 }

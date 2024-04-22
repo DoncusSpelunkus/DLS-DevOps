@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using PatientRepositories;
 using PatientServices;
@@ -18,7 +19,6 @@ builder.Services.AddDbContext<PatientDbContext>(options =>
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
 await app.RunAsync();
