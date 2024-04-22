@@ -1,17 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PatientService.Services.Interface;
-using DefaultNamespace;
-
-namespace PatientService.Controllers;
+using PatientServices;
 [ApiController]
 [Route("[controller]")]
 public class PatientController : ControllerBase
 {
     private readonly IPatientService _patientService;
-
-    public PatientController(IPatientService patientService)
-    {
+    private readonly IFeatureHubContext _featureHubContext;
+    public PatientController(IPatientService patientService, IFeatureHubContext featureHubContext){
         _patientService = patientService;
+        _featureHubContext = featureHubContext;
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> GetPatients()
+    {
+        var featureHubContext = await _featureHubContext.GetFeatureHubContextAsync();
+        return Ok(featureHubContext["Test"].IsEnabled);
     }
 
     [HttpPost("Create")]
@@ -64,4 +69,5 @@ public class PatientController : ControllerBase
         _patientService.RebuildDb();
         return Ok("Database rebuilt successfully.");
     }
+
 }

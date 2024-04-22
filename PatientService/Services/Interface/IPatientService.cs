@@ -1,6 +1,8 @@
+
 ﻿using DefaultNamespace;
 
-namespace PatientService.Services.Interface;
+﻿namespace PatientServices;
+
 
 public interface IPatientService
 {

@@ -1,0 +1,34 @@
+version: "3"
+services:
+  featurehub:
+    image: featurehub/party-server:latest
+    restart: always
+    volumes:
+      - featurehub-h2-data:/db
+    ports:
+      - "8085:8085"
+
+  Test:
+    image: test
+    build:
+      context: .
+      dockerfile: XunitTest/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - featurehub
+
+  PatientService:
+    image: patient-service
+    build:
+      context: .
+      dockerfile: PatientService/Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - featurehub
+
+    
+volumes:
+  featurehub-h2-data:
+  

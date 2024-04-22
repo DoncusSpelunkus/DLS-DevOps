@@ -1,6 +1,6 @@
+
 ﻿using DefaultNamespace;
-using PatientService.DataAccess.Interfaces;
-using PatientService.Services.Interface;
+using PatientRepository;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -45,5 +45,6 @@ namespace PatientService.Services
         {
             _patientRepository.RebuildDb();
         }
+
     }
 }
