@@ -27,7 +27,6 @@ services:
       - "8081:8081"
     depends_on:
       - featurehub
-
     
 volumes:
   featurehub-h2-data:
