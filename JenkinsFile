@@ -11,14 +11,14 @@ pipeline {
         }
         stage('Test') {
             steps {
-                bat "docker compose u -d"
+                bat "docker compose up -d"
             }
         }
         stage('Deliver') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     bat "docker login -u $USERNAME -p $PASSWORD"
-                    
+
                     bat "docker compose push"
                 }
             }
