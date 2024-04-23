@@ -1,7 +1,7 @@
 pipeline {
     agent any
     triggers {
-        pollSCM("* * * * *")
+        pollSCM('* * * * *')
     }
     environment {
         DOCKER_HOME = 'C:/Program Files/Docker/Docker' // Adjust the path to Docker executable as per your system
@@ -10,24 +10,30 @@ pipeline {
         stage('Start Docker') {
             steps {
                 script {
-                    bat "\"${DOCKER_HOME}\""
+                    def dockerRunning = bat(script: 'docker info >nul 2>&1 && echo true || echo false', returnStatus: true)
+                    if (dockerRunning != 0) {
+                        echo "Docker is not running. Starting Docker..."
+                        bat 'start-service Docker'
+                    } else {
+                        echo "Docker is already running."
+                    }
                 }
             }
         }
         stage('Build') {
             steps {
-                bat "docker compose build"
+                bat 'docker compose build'
             }
         }
         stage('Prep') {
             steps {
-                bat "docker compose up featurehub -d"
-                bat "docker compose up PatientService -d"
+                bat 'docker compose up featurehub -d'
+                bat 'docker compose up PatientService -d'
             }
         }
         stage('Test') {
             steps {
-                bat "docker compose up test"
+                bat 'docker compose up test'
             }
         }
         stage('Deliver') {
@@ -35,7 +41,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     bat "docker login -u $USERNAME -p $PASSWORD"
                     echo "Pushing Docker images to Docker Hub... $USERNAME"
-                    bat "docker compose push"
+                    bat 'docker compose push'
                 }
             }
         }
