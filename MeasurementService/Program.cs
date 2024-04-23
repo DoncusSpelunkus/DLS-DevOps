@@ -1,6 +1,5 @@
-using MeasurementService.Repository;
-using MeasurementService.Repository.DB;
-using MeasurementService.Services;
+
+using MeasurementService;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 //builder.Services.AddSingleton<IFeatureHubContext, FeatureHubContextService>();
 builder.Services.AddScoped<IMeasurementRepo, MeasurementRepo>();
-builder.Services.AddScoped<IMeasurementService, MeasurementService.Services.MeasurementService>();
+builder.Services.AddScoped<IMeasurementService, MeasurementService.MeasurementService>();
 
 builder.Services.AddDbContext<MeasurementDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MeasurementDb")));

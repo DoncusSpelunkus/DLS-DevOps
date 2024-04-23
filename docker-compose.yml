@@ -26,7 +26,15 @@ services:
       - "8081:8081"
     depends_on:
       - featurehub
-    
+  MeasurementService:
+    image: measurement-service
+    build:
+      context: .
+      dockerfile: MeasurementService/Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      - featurehub
 volumes:
   featurehub-h2-data:
   

@@ -1,6 +1,6 @@
 ﻿using DefaultNamespace;
 
-namespace MeasurementService.Repository;
+namespace MeasurementService;
 
 public interface IMeasurementRepo
 {

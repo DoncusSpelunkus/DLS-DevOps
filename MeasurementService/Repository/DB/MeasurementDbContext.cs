@@ -1,7 +1,7 @@
 ﻿using DefaultNamespace;
 using Microsoft.EntityFrameworkCore;
 
-namespace MeasurementService.Repository.DB;
+namespace MeasurementService;
 
 public class MeasurementDbContext : DbContext
 {
