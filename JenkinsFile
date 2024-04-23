@@ -7,15 +7,20 @@ pipeline {
         DOCKER_HOME = 'C:/Program Files/Docker/Docker' // Adjust the path to Docker executable as per your system
     }
     stages {
-        stage('Start Docker') {
+        stage('Check Docker') {
             steps {
                 script {
-                    def dockerRunning = bat(script: 'docker info >nul 2>&1 && echo true || echo false', returnStatus: true)
-                    if (dockerRunning != 0) {
-                        echo 'Docker is not running. Starting Docker...'
-                        bat 'start-service Docker'
+                    def dockerExecutable = 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe'
+                    def processName = 'Docker Desktop.exe'
+                    
+                    def processes = bat(returnStdout: true, script: 'tasklist /fo csv /nh').trim().split('\n')
+                    def dockerProcess = processes.find { it.contains(processName) }
+                    
+                    if (dockerProcess) {
+                        echo 'Docker Desktop is running.'
                     } else {
-                        echo 'Docker is already running.'
+                        echo 'Docker Desktop is not running.'
+                        bat "start /MIN \"\" \"${dockerExecutable}\""
                     }
                 }
             }
