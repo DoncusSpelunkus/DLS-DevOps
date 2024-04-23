@@ -12,10 +12,10 @@ pipeline {
                 script {
                     def dockerRunning = bat(script: 'docker info >nul 2>&1 && echo true || echo false', returnStatus: true)
                     if (dockerRunning != 0) {
-                        echo "Docker is not running. Starting Docker..."
+                        echo 'Docker is not running. Starting Docker...'
                         bat 'start-service Docker'
                     } else {
-                        echo "Docker is already running."
+                        echo 'Docker is already running.'
                     }
                 }
             }
