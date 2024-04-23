@@ -19,7 +19,7 @@ pipeline {
                         echo 'Docker Desktop is running.'
                     } else {
                         echo 'Docker Desktop is not running.'
-                        bat "\"${dockerExecutable}\""
+                        bat "start \"\" \"${dockerExecutable}\""
                     }
                 }
             }
