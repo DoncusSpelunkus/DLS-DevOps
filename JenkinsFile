@@ -10,7 +10,7 @@ pipeline {
         stage('Check Docker') {
             steps {
                 script {
-                    def dockerExecutable = 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe'
+                    def dockerExecutable = 'C:/Program Files/Docker/Docker Desktop.exe'
                     def processName = 'Docker Desktop.exe'
                     
                     def processes = bat(returnStdout: true, script: 'tasklist /fo csv /nh').trim().split('\n')
