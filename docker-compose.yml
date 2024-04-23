@@ -8,8 +8,7 @@ services:
     ports:
       - "8085:8085"
 
-  Test:
-    image: test
+  test:
     build:
       context: .
       dockerfile: XunitTest/Dockerfile
@@ -19,7 +18,7 @@ services:
       - featurehub
 
   PatientService:
-    image: patient-service
+    image: doncusspelunkus/dls_devops
     build:
       context: .
       dockerfile: PatientService/Dockerfile
@@ -27,7 +26,6 @@ services:
       - "8081:8081"
     depends_on:
       - featurehub
-
     
 volumes:
   featurehub-h2-data:

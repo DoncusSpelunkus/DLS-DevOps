@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    triggers {
+        pollSCM('* * * * *')
+    }
+    environment {
+        DOCKER_HOME = 'C:/Program Files/Docker/Docker' // Adjust the path to Docker executable as per your system
+    }
+    stages {
+        stage('Build') {
+            steps {
+                bat 'docker compose build'
+            }
+        }
+        stage('Prep') {
+            steps {
+                bat 'docker compose up featurehub -d'
+                bat 'docker compose up PatientService -d'
+            }
+        }
+        stage('Test') {
+            steps {
+                bat 'docker compose up test'
+            }
+        }
+        stage('Deliver') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    bat "docker login -u $USERNAME -p $PASSWORD"
+                    echo "Pushing Docker images to Docker Hub... $USERNAME"
+                    bat 'docker compose push'
+                }
+            }
+        }
+    }
+}

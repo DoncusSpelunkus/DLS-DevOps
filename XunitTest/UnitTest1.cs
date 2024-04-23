@@ -1,14 +1,24 @@
-using PatientServices; // Ensure you're using the correct namespace
+using Moq;
+using PatientRepositories;
+using PatientServices;
 
 namespace XunitTest
 {
     public class UnitTest1
     {
+        private readonly Mock<IPatientRepository> _patientRepositoryMock = new Mock<IPatientRepository>();
+        private readonly PatientService _patientService;
+
+        public UnitTest1()
+        {
+            _patientService = new PatientService(_patientRepositoryMock.Object);
+        }
+
         [Fact]
         public void Test1()
         {
-            var patientService = new PatientService(); // Instantiate the class
-            Assert.Equal("John Doe", patientService.GetPatientName());
+            // Use _patientService instead of patientService
+            Assert.Equal("John Doe", _patientService.TestMethod());
         }
     }
 }
