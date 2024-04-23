@@ -1,6 +1,7 @@
 ﻿using DefaultNamespace;
 using Microsoft.AspNetCore.Mvc;
 using PatientServices;
+using Monitoring;
 [ApiController]
 [Route("[controller]")]
 public class PatientController : ControllerBase
@@ -48,8 +49,9 @@ public class PatientController : ControllerBase
     }
 
     [HttpPut("UpdatePatient")]
-    public async Task<ActionResult<Patient>> Update(Patient patient)
+    public async Task<ActionResult<Patient>> Update(Patient patient, string id)
     {
+        
         var updatedPatient = await _patientService.Update(patient);
         if (updatedPatient == null)
             return BadRequest("Unable to update patient.");

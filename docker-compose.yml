@@ -7,6 +7,16 @@ services:
       - featurehub-h2-data:/db
     ports:
       - "8085:8085"
+  seq: 
+    image: datalust/seq
+    ports:
+      - "5341:5341"
+      - "4342:80"
+    volumes:
+      - rps_seq_data1:/data
+    environment:
+      - ACCEPT_EULA=Y
+
 
   Test:
     image: test
@@ -31,4 +41,4 @@ services:
     
 volumes:
   featurehub-h2-data:
-  
+  rps_seq_data1:
