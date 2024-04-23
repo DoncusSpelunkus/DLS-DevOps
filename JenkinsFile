@@ -10,7 +10,7 @@ pipeline {
         stage('Start Docker') {
             steps {
                 script {
-                    bat "${DOCKER_HOME}d"
+                    bat "\"${DOCKER_HOME}\""
                 }
             }
         }
