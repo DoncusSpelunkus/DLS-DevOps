@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MeasurementService; // Assuming IMeasurementService is defined here
-using DefaultNamespace; // Assuming Measurement class is defined here
+﻿
+using DefaultNamespace;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeasurementService.Controllers
