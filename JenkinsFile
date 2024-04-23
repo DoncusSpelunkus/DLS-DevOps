@@ -3,7 +3,17 @@ pipeline {
     triggers {
         pollSCM("* * * * *")
     }
+    environment {
+        DOCKER_HOME = 'C:\Program Files\Docker\Docker' // Adjust the path to Docker executable as per your system
+    }
     stages {
+        stage('Start Docker') {
+            steps {
+                script {
+                    bat "${DOCKER_HOME}d"
+                }
+            }
+        }
         stage('Build') {
             steps {
                 bat "docker compose build"
