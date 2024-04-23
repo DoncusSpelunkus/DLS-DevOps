@@ -9,7 +9,6 @@ services:
       - "8085:8085"
 
   Test:
-    image: test
     build:
       context: .
       dockerfile: XunitTest/Dockerfile
@@ -19,7 +18,7 @@ services:
       - featurehub
 
   PatientService:
-    image: patient-service
+    image: doncusspelunkus/dls_devops
     build:
       context: .
       dockerfile: PatientService/Dockerfile
