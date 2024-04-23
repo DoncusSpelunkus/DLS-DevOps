@@ -7,23 +7,6 @@ pipeline {
         DOCKER_HOME = 'C:/Program Files/Docker/Docker' // Adjust the path to Docker executable as per your system
     }
     stages {
-        stage('Check Docker') {
-            steps {
-                script {
-                    def dockerExecutable = 'C:\\Program Files\\Docker\\Docker Desktop.exe'
-                    
-                    def processes = bat(returnStdout: true, script: 'tasklist /fo csv /nh').trim().split('\n')
-                    def dockerProcess = processes.find { it.contains('Docker Desktop.exe') }
-                    
-                    if (dockerProcess) {
-                        echo 'Docker Desktop is running.'
-                    } else {
-                        echo 'Docker Desktop is not running.'
-                        bat "start \"\" \"${dockerExecutable}\""
-                    }
-                }
-            }
-        }
         stage('Build') {
             steps {
                 bat 'docker compose build'
