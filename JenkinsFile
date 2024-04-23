@@ -10,17 +10,16 @@ pipeline {
         stage('Check Docker') {
             steps {
                 script {
-                    def dockerExecutable = 'C:/Program Files/Docker/Docker Desktop.exe'
-                    def processName = 'Docker Desktop.exe'
+                    def dockerExecutable = 'C:\\Program Files\\Docker\\Docker Desktop.exe'
                     
                     def processes = bat(returnStdout: true, script: 'tasklist /fo csv /nh').trim().split('\n')
-                    def dockerProcess = processes.find { it.contains(processName) }
+                    def dockerProcess = processes.find { it.contains('Docker Desktop.exe') }
                     
                     if (dockerProcess) {
                         echo 'Docker Desktop is running.'
                     } else {
                         echo 'Docker Desktop is not running.'
-                        bat "start /MIN \"\" \"${dockerExecutable}\""
+                        bat "\"${dockerExecutable}\""
                     }
                 }
             }
