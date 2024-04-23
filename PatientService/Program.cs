@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using PatientRepositories;
 using PatientServices;
@@ -12,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSingleton<IFeatureHubContext, FeatureHubContextService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<IPatientService, PatientService.Services.PatientService>();
 
 builder.Services.AddDbContext<PatientDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PatientDb")));

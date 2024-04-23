@@ -1,9 +1,9 @@
-
-﻿using DefaultNamespace;
-using PatientRepository;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DefaultNamespace;
+using PatientRepositories;
+using PatientServices;
 
 namespace PatientService.Services
 {
