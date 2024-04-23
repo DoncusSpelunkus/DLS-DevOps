@@ -1,11 +1,8 @@
-
+﻿
 ﻿using DefaultNamespace;
-using PatientRepository;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using PatientRepositories;
 
-namespace PatientService.Services
+namespace PatientServices
 {
     public class PatientService : IPatientService
     {
@@ -41,10 +38,17 @@ namespace PatientService.Services
             return _patientRepository.GetAllPatients();
         }
 
+        public string TestMethod()
+        {
+            return "John Doe";
+        }
+
         public void RebuildDb()
         {
             _patientRepository.RebuildDb();
         }
+
+
 
     }
 }

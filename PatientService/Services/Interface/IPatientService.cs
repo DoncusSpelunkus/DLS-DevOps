@@ -1,4 +1,4 @@
-
+﻿
 ﻿using DefaultNamespace;
 
 ﻿namespace PatientServices;
@@ -11,5 +11,7 @@ public interface IPatientService
     public Task Delete(string id);
     public Task<Patient?> Update(Patient patient);
     public Task<List<Patient>> GetAllPatients();
+
+    public string TestMethod();
     public void RebuildDb();
 }

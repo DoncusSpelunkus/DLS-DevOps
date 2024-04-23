@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PatientServices;
+using DefaultNamespace;
+
 [ApiController]
 [Route("[controller]")]
 public class PatientController : ControllerBase
