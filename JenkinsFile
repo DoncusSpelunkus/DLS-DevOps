@@ -9,9 +9,15 @@ pipeline {
                 bat "docker compose build"
             }
         }
+        stage('Prep') {
+            steps {
+                bat "docker compose up featurehub -d"
+                bat "docker compose up PatientService -d"
+            }
+        }
         stage('Test') {
             steps {
-                bat "docker compose up -d"
+                bat "docker compose up test"
             }
         }
         stage('Deliver') {
