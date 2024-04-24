@@ -37,6 +37,18 @@ services:
     depends_on:
       - featurehub
     
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sql-server
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"  # Set your own strong password here
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"  # Expose the SQL Server port
+    volumes:
+      - ./data:/var/opt/mssql/data
+
 volumes:
   featurehub-h2-data:
+  
   
