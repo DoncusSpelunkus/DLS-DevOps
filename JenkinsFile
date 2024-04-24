@@ -35,9 +35,8 @@ pipeline {
     }
     post {
         always {
-            steps {
-                bat 'docker compose down'
-            }
+            echo 'Cleaning up...'
+            bat 'docker compose down'
         }
     }
 }
