@@ -11,5 +11,4 @@ public class Measurement
     public bool Seen { get; set; }
     
     public string PatientSsn { get; set; }
-    public Patient Patient { get; set; }
 }

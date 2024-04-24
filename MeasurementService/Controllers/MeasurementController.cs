@@ -15,14 +15,14 @@ namespace MeasurementService.Controllers
             _measurementService = measurementService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllMeasurements(string ssn)
         {
             var measurements = await _measurementService.GetAllMeasurement(ssn);
             return Ok(measurements);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetMeasurementById(int id, string ssn)
         {
             var measurement = await _measurementService.GetMeasurementById(id, ssn);
@@ -52,7 +52,7 @@ namespace MeasurementService.Controllers
             return Ok(updatedMeasurement);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteMeasurement(int id)
         {
             await _measurementService.DeleteMeasurement(id);
