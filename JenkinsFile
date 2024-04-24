@@ -33,4 +33,13 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            stage('Cleanup') {
+                steps {
+                    bat 'docker compose down'
+                }
+            }
+        }
+    }
 }
