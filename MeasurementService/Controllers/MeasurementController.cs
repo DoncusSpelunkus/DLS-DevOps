@@ -16,16 +16,16 @@ namespace MeasurementService.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMeasurements()
+        public async Task<IActionResult> GetAllMeasurements(string ssn)
         {
-            var measurements = await _measurementService.GetAllMeasurement();
+            var measurements = await _measurementService.GetAllMeasurement(ssn);
             return Ok(measurements);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetMeasurementById(int id)
+        public async Task<IActionResult> GetMeasurementById(int id, string ssn)
         {
-            var measurement = await _measurementService.GetMeasurementById(id);
+            var measurement = await _measurementService.GetMeasurementById(id, ssn);
             if (measurement == null)
                 return NotFound($"No measurement found with ID {id}.");
             

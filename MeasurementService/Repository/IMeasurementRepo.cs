@@ -10,4 +10,5 @@ public interface IMeasurementRepo
         public Task DeleteMeasurement(int id);
         public Task<Measurement?> UpdateMeasurement(Measurement measurement);
         public void RebuildDb();
+        public Task<List<Measurement>> GetMeasurementsBySsn(string ssn);
 }

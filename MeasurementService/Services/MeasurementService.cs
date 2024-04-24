@@ -13,16 +13,40 @@ namespace MeasurementService
             _measurementRepo = measurementRepo;
         }
 
-        public Task<Measurement> GetMeasurementById(int id)
+        public async Task<Measurement> GetMeasurementById(int id, string ssn)
         {
-            return _measurementRepo.GetMeasurementById(id);
+            
+            if (!await IsPatientSsnCorrect(id, ssn))
+            {
+                throw new ArgumentException("Invalid SSN provided for the measurement.");
+            }
+            
+            return await _measurementRepo.GetMeasurementById(id);
         }
 
-        public Task<List<Measurement>> GetAllMeasurement()
+        public async Task<List<Measurement>> GetAllMeasurement(string ssn)
         {
-            return _measurementRepo.GetAllMeasurement();
+            if (!await IsPatientSsnCorrect(ssn))
+            {
+                throw new ArgumentException("Invalid SSN provided for the measurements.");
+            }
+       
+            return await _measurementRepo.GetAllMeasurement();
         }
 
+        private async Task<bool> IsPatientSsnCorrect(int id, string ssn)
+        {
+          
+            var measurement = await _measurementRepo.GetMeasurementById(id);
+            return measurement != null && measurement.PatientSsn == ssn;
+        }
+
+        private async Task<bool> IsPatientSsnCorrect(string ssn)
+        {
+            var measurements = await _measurementRepo.GetMeasurementsBySsn(ssn);
+            return measurements is { Count: > 0 };
+        }
+        
         public Task<Measurement?> CreateMeasurement(Measurement measurement)
         {
             return _measurementRepo.CreateMeasurement(measurement);
@@ -37,10 +61,12 @@ namespace MeasurementService
         {
             return _measurementRepo.UpdateMeasurement(measurement);
         }
-
+        
         public void RebuildDb()
         {
             _measurementRepo.RebuildDb();
         }
+        
+        
     }
 }

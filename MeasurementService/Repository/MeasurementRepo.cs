@@ -16,19 +16,31 @@ namespace MeasurementService
         {
             try
             {
-                return await _measurementDbContext.MeasurementsTable.FindAsync(id);
+                var measurement = await _measurementDbContext.MeasurementsTable.FindAsync(id);
+                if (measurement != null)
+                {
+                    measurement.Seen = true;
+                    await _measurementDbContext.SaveChangesAsync();
+                }
+                return measurement;
             }
             catch (Exception e)
             {
                 throw new Exception("Something went wrong when getting measurement by ID: " + e.Message);
             }
         }
-        
+
         public async Task<List<Measurement>> GetAllMeasurement()
         {
             try
             {
-                return await _measurementDbContext.MeasurementsTable.ToListAsync();
+                var measurements = await _measurementDbContext.MeasurementsTable.ToListAsync();
+                foreach (var measurement in measurements)
+                {
+                    measurement.Seen = true;
+                }
+                await _measurementDbContext.SaveChangesAsync();
+                return measurements;
             }
             catch (Exception e)
             {
@@ -99,6 +111,13 @@ namespace MeasurementService
             {
                 throw new Exception("Something went wrong when rebuilding the database: " + e.Message);
             }
+        }
+
+        public async Task<List<Measurement>> GetMeasurementsBySsn(string ssn)
+        {
+            return await _measurementDbContext.MeasurementsTable
+                .Where(m => m.PatientSsn == ssn)
+                .ToListAsync();
         }
     }
 }
