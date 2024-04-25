@@ -1,8 +1,7 @@
 ﻿using DefaultNamespace;
 using Microsoft.AspNetCore.Mvc;
 using PatientServices;
-using DefaultNamespace;
-using Monitoring;
+
 using OpenTelemetry.Trace;
 
 [Route("[controller]")]
@@ -27,9 +26,8 @@ public class PatientController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public async Task<ActionResult<Patient>> Create(Patient patient)
+    public async Task<ActionResult<Patient>> Create([FromBody] Patient patient)
     {
-        
         using var activity = _tracer.StartActiveSpan("CreatePatient");
         var createdPatient = await _patientService.Create(patient);
         if (createdPatient == null)
@@ -45,7 +43,7 @@ public class PatientController : ControllerBase
         return Ok(createdPatient);
     }
 
-    [HttpGet("GetById")]
+    [HttpGet("GetById/{id}")]
     public async Task<ActionResult<Patient>> GetPatientById(string id)
     {   
         using var activity = _tracer.StartActiveSpan("GetPatientById");
@@ -55,12 +53,10 @@ public class PatientController : ControllerBase
             Monitoring.Monitoring.Log.Error("Couldn't GetPatientById");
             return NotFound($"No patient found with ID {id}.");
         }
-            
-
         return Ok(patient);
     }
 
-    [HttpDelete("Delete")]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {   
         using var activity = _tracer.StartActiveSpan("Delete");

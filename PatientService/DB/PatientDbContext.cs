@@ -16,9 +16,6 @@ public class PatientDbContext : DbContext
         // setting the ssn as the primary key
         modelBuilder.Entity<Patient>().HasKey(p => p.Ssn);
         // setting ssn as unique, may not need this as we also set it as primary key just above
-        modelBuilder.Entity<Patient>()
-            .HasIndex(u => u.Ssn)
-            .IsUnique();
       
     }
 

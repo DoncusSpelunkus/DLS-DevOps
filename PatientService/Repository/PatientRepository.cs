@@ -21,7 +21,6 @@ public class PatientRepository : IPatientRepository
         }
         catch (Exception e)
         {
-            
             throw new Exception("Something went wrong when creating a new Patients" + e.Message);
         }
     }
