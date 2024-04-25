@@ -2,15 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using PatientServices;
 using Monitoring;
+using OpenTelemetry.Trace;
+
 [ApiController]
 [Route("[controller]")]
 public class PatientController : ControllerBase
 {
     private readonly IPatientService _patientService;
     private readonly IFeatureHubContext _featureHubContext;
-    public PatientController(IPatientService patientService, IFeatureHubContext featureHubContext){
+    private readonly Tracer _tracer;
+    public PatientController(IPatientService patientService, IFeatureHubContext featureHubContext, Tracer tracer){
         _patientService = patientService;
         _featureHubContext = featureHubContext;
+        _tracer = tracer;
     }
 
 

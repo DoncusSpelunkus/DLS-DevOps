@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenTelemetry" Version="1.8.1" />
+    <PackageReference Include="OpenTelemetry.Api.ProviderBuilderExtensions" Version="1.8.1" />
+    <PackageReference Include="OpenTelemetry.Exporter.Zipkin" Version="1.8.1" />
     <PackageReference Include="Serilog" Version="4.0.0-dev-02149" />
     <PackageReference Include="Serilog.Enrichers.Span" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="5.1.0-dev-00943" />
