@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using Serilog;
-
+using Serilog.Enrichers.Span;
 namespace Monitoring;
 
 public static class Monitoring
@@ -12,15 +12,14 @@ public static class Monitoring
 
     static Monitoring()
     {
+       
         Serilog.Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
             .WriteTo.Console()
             .WriteTo.Seq("http://seq:5341")
+            .Enrich.WithSpan()
             .CreateLogger();
-    }
-    public static void Main(string[] args)
-    {
-        Console.WriteLine("Monitoring service is running...");
+
     }
     
 }
