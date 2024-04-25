@@ -37,12 +37,6 @@ namespace PatientServices
         {
             return _patientRepository.GetAllPatients();
         }
-
-        public string TestMethod()
-        {
-            return "John Doe";
-        }
-
         public void RebuildDb()
         {
             _patientRepository.RebuildDb();

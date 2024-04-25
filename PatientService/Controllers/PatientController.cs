@@ -25,6 +25,7 @@ public class PatientController : ControllerBase
     [HttpPost("Create")]
     public async Task<ActionResult<Patient>> Create(Patient patient)
     {
+        
         var createdPatient = await _patientService.Create(patient);
         if (createdPatient == null)
             return BadRequest("Unable to create patient.");
