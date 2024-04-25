@@ -1,5 +1,4 @@
-﻿
-﻿using DefaultNamespace;
+﻿﻿using DefaultNamespace;
 using PatientRepositories;
 
 namespace PatientServices
