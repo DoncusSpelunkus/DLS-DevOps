@@ -9,5 +9,5 @@ public class Patient
     [EmailAddress]
     public string Mail { get; set; }
     public string Name { get; set; }
-    public List<Measurement> measurements { get; set; }
+    public List<Measurement>? measurements { get; set; }
 }

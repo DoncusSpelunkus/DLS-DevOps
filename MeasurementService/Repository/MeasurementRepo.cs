@@ -12,11 +12,11 @@ namespace MeasurementService
             _measurementDbContext = measurementDbContext;
         }
 
-        public async Task<Measurement?> GetMeasurementById(int id)
+       public async Task<Measurement?> GetMeasurementById(int id)
         {
             try
             {
-                var measurement = await _measurementDbContext.MeasurementsTable.FindAsync(id);
+                var measurement =  await _measurementDbContext.MeasurementsTable.FindAsync(id);
                 if (measurement != null)
                 {
                     measurement.Seen = true;
@@ -30,16 +30,20 @@ namespace MeasurementService
             }
         }
 
-        public async Task<List<Measurement>> GetAllMeasurement()
+
+        public async Task<List<Measurement>> GetAllMeasurement(string ssn)
         {
             try
             {
-                var measurements = await _measurementDbContext.MeasurementsTable.ToListAsync();
+                var measurements = await _measurementDbContext.MeasurementsTable.Where(m => m.PatientSsn == ssn).ToListAsync();
+
                 foreach (var measurement in measurements)
                 {
                     measurement.Seen = true;
                 }
+
                 await _measurementDbContext.SaveChangesAsync();
+
                 return measurements;
             }
             catch (Exception e)
@@ -47,6 +51,7 @@ namespace MeasurementService
                 throw new Exception("Something went wrong when getting all measurements: " + e.Message);
             }
         }
+
 
         public async Task<Measurement?> CreateMeasurement(Measurement measurement)
         {
@@ -58,6 +63,7 @@ namespace MeasurementService
             }
             catch (Exception e)
             {
+                Console.WriteLine("Inner Exception: " + e.InnerException.Message);
                 throw new Exception("Something went wrong when creating a new measurement: " + e.Message);
             }
         }
@@ -111,13 +117,6 @@ namespace MeasurementService
             {
                 throw new Exception("Something went wrong when rebuilding the database: " + e.Message);
             }
-        }
-
-        public async Task<List<Measurement>> GetMeasurementsBySsn(string ssn)
-        {
-            return await _measurementDbContext.MeasurementsTable
-                .Where(m => m.PatientSsn == ssn)
-                .ToListAsync();
         }
     }
 }
