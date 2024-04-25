@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using DefaultNamespace;
+﻿using DefaultNamespace;
 using PatientRepositories;
-using PatientServices;
 
-namespace PatientService.Services
+
+namespace PatientServices
 {
     public class PatientService : IPatientService
     {

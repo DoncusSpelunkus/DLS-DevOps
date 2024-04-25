@@ -38,6 +38,8 @@ public class PatientController : ControllerBase
             return BadRequest("Unable to create patient.");
             
         }
+
+        Monitoring.Monitoring.Log.Debug("Patient created successfully");
             
 
         return Ok(createdPatient);
