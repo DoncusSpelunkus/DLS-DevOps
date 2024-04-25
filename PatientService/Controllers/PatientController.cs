@@ -20,7 +20,8 @@ public class PatientController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetPatients()
-    {
+    {   using var activity = _tracer.StartActiveSpan("CreatePatient");
+        
         var featureHubContext = await _featureHubContext.GetFeatureHubContextAsync();
         return Ok(featureHubContext["Test"].IsEnabled);
     }
@@ -28,26 +29,39 @@ public class PatientController : ControllerBase
     [HttpPost("Create")]
     public async Task<ActionResult<Patient>> Create(Patient patient)
     {
+        
+        using var activity = _tracer.StartActiveSpan("CreatePatient");
         var createdPatient = await _patientService.Create(patient);
         if (createdPatient == null)
+        {
+            Monitoring.Monitoring.Log.Error("Couldn't create the patient");
             return BadRequest("Unable to create patient.");
+            
+        }
+            
 
         return Ok(createdPatient);
     }
 
     [HttpGet("GetById")]
     public async Task<ActionResult<Patient>> GetPatientById(string id)
-    {
+    {   
+        using var activity = _tracer.StartActiveSpan("GetPatientById");
         var patient = await _patientService.GetPatientById(id);
         if (patient == null)
+        { 
+            Monitoring.Monitoring.Log.Error("Couldn't GetPatientById");
             return NotFound($"No patient found with ID {id}.");
+        }
+            
 
         return Ok(patient);
     }
 
     [HttpDelete("Delete")]
     public async Task<IActionResult> Delete(string id)
-    {
+    {   
+        using var activity = _tracer.StartActiveSpan("Delete");
         await _patientService.Delete(id);
         return NoContent();
     }
