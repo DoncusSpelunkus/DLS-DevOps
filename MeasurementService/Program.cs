@@ -11,7 +11,7 @@ builder.WebHost.UseUrls("http://0.0.0.0:8082");
 
 // Add services to the container.
 builder.Services.AddDbContext<MeasurementDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("MeasurementDb"))); // Use SQLite
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MeasurementDb"))); // Use SQLite
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
