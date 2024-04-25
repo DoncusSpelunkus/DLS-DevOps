@@ -41,10 +41,10 @@ services:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sql-server
     environment:
-      SA_PASSWORD: "YourStrong@Passw0rd"  # Set your own strong password here
+      SA_PASSWORD: "YourStrong@Passw0rd"  
       ACCEPT_EULA: "Y"
     ports:
-      - "1433:1433"  # Expose the SQL Server port
+      - "1433:1433"  
     volumes:
       - ./data:/var/opt/mssql/data
 
