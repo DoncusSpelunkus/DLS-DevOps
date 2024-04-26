@@ -24,7 +24,7 @@ else:
 
 def sendInfo(data):
     try:
-        url = "http://localhost:8082/Measurement/Create"
+        url = "http://dls-devops-MeasurementService-1:8082/Measurement/Create"
 
         headers = {
             'Content-Type': 'application/json',
