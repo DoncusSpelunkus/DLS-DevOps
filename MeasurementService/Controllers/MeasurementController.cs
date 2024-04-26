@@ -1,5 +1,4 @@
-﻿
-using DefaultNamespace;
+﻿using DefaultNamespace;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeasurementService.Controllers
@@ -10,9 +9,17 @@ namespace MeasurementService.Controllers
     {
         private readonly IMeasurementService _measurementService;
 
-        public MeasurementController(IMeasurementService measurementService)
+        private readonly IFeatureHubContext _featureHubContext;
+
+
+        public MeasurementController(
+            IMeasurementService measurementService,
+            IFeatureHubContext featureHubContext
+        )
         {
             _measurementService = measurementService;
+            _featureHubContext = featureHubContext;
+
         }
 
         [HttpGet("GetAll/{ssn}")]
@@ -28,27 +35,44 @@ namespace MeasurementService.Controllers
             var measurement = await _measurementService.GetMeasurementById(id);
             if (measurement == null)
                 return NotFound($"No measurement found with ID {id}.");
-            
+
             return Ok(measurement);
         }
 
         [HttpPost("Create")]
         public async Task<IActionResult> CreateMeasurement(MeasurementDto measurementDto)
         {
+           
+            var config = await _featureHubContext.GetFeatureHubContextAsync();
+
+            
+            
+            var context = await config.NewContext().Attr("country", "denmark").Build();
+            
+     
+            var enbabled =  context["CreateMeasurement"].IsEnabled;
+            if(!enbabled)
+            {
+                return BadRequest("Feature is disabled");
+            }
+
             var createdMeasurement = await _measurementService.CreateMeasurement(measurementDto);
             if (createdMeasurement == null)
                 return BadRequest("Unable to create measurement.");
-            
+
             return Ok(createdMeasurement);
         }
 
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> UpdateMeasurement(MeasurementDto measurementDto, int id)
         {
-            var updatedMeasurement = await _measurementService.UpdateMeasurement(measurementDto, id);
+            var updatedMeasurement = await _measurementService.UpdateMeasurement(
+                measurementDto,
+                id
+            );
             if (updatedMeasurement == null)
                 return BadRequest("Unable to update measurement.");
-            
+
             return Ok(updatedMeasurement);
         }
 

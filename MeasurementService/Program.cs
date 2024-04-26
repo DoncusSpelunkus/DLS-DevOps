@@ -15,7 +15,7 @@ var config = new MapperConfiguration(conf =>
     conf.CreateMap<MeasurementDto, Measurement>();
 });
 builder.Services.AddSingleton(config.CreateMapper());
-//builder.Services.AddSingleton<IFeatureHubContext, FeatureHubContextService>();
+builder.Services.AddSingleton<IFeatureHubContext, FeatureHubContextService>();
 builder.Services.AddScoped<IMeasurementRepo, MeasurementRepo>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService.MeasurementService>();
 

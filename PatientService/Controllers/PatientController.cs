@@ -10,6 +10,10 @@ public class PatientController : ControllerBase
     private readonly IPatientService _patientService;
     private readonly IFeatureHubContext _featureHubContext;
     private readonly Tracer _tracer;
+
+   
+
+
     public PatientController(IPatientService patientService, IFeatureHubContext featureHubContext, Tracer tracer){
         _patientService = patientService;
         _featureHubContext = featureHubContext;
@@ -19,8 +23,11 @@ public class PatientController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetPatients()
-    {   using var activity = _tracer.StartActiveSpan("CreatePatient");
+    {   
+
+        using var activity = _tracer.StartActiveSpan("CreatePatient");
         
+
         var featureHubContext = await _featureHubContext.GetFeatureHubContextAsync();
         return Ok(featureHubContext["Test"].IsEnabled);
     }
