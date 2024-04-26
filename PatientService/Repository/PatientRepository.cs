@@ -1,20 +1,23 @@
 ﻿using DefaultNamespace;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Trace;
 
 namespace PatientRepositories;
 
 public class PatientRepository : IPatientRepository
 {
     private readonly PatientDbContext _patientDbContext;
-    public PatientRepository(PatientDbContext patientDbContext)
+    private readonly Tracer _tracer;
+    public PatientRepository(PatientDbContext patientDbContext, Tracer tracer)
     {
         _patientDbContext = patientDbContext;
+        _tracer = tracer;
     }
 
     public async Task<Patient?> Create(Patient patient)
     {
         try
-        {
+        {   using var activity = _tracer.StartActiveSpan("CreatePatient in the repo");
             await _patientDbContext.PatientsTable!.AddAsync(patient);
             await _patientDbContext.SaveChangesAsync();
             return patient;
@@ -29,6 +32,7 @@ public class PatientRepository : IPatientRepository
     {
         try
         {
+            using var activity = _tracer.StartActiveSpan("GetPatientById in the repo");
             var patient = await _patientDbContext.PatientsTable!.FindAsync(id) ?? throw new KeyNotFoundException("No such patient found");
             return patient;
 
@@ -44,6 +48,7 @@ public class PatientRepository : IPatientRepository
     {
         try
         {
+            using var activity = _tracer.StartActiveSpan("Delete in the repo");
             var patient = await _patientDbContext.PatientsTable!.FindAsync(id) ?? throw new KeyNotFoundException("No such patient found");
             _patientDbContext.PatientsTable.Remove(patient);
             await _patientDbContext.SaveChangesAsync();
@@ -60,6 +65,7 @@ public class PatientRepository : IPatientRepository
     {
         try
         {
+            using var activity = _tracer.StartActiveSpan("Update in the repo");
             var existingPatient = await _patientDbContext.PatientsTable.FindAsync(patient.Ssn);
             if (existingPatient == null)
             {
@@ -82,6 +88,7 @@ public class PatientRepository : IPatientRepository
     {
         try
         {
+            using var activity = _tracer.StartActiveSpan("GetAllPatients in the repo");
             return await _patientDbContext.PatientsTable!.ToListAsync();
         }
         catch (Exception e)
@@ -94,6 +101,7 @@ public class PatientRepository : IPatientRepository
     {
         try
         {
+            using var activity = _tracer.StartActiveSpan("RebuildDb in the repo");
             _patientDbContext.Database.EnsureDeleted();
             _patientDbContext.Database.EnsureCreated();
         }
