@@ -23,6 +23,7 @@ else:
     inDenmark = False
 
 def sendInfo(data):
+    print("Sending measurement")
     try:
         url = "http://dls-devops-MeasurementService-1:8082/Measurement/Create"
 
@@ -30,10 +31,10 @@ def sendInfo(data):
             'Content-Type': 'application/json',
             "country": country
         }
-
+        
         response = requests.request("POST", url, headers=headers, data=json.dumps(data))
-        print(response.text)
-        return response.text
+        st.write(response)
+        return response
     except:
         return "Error sending measurement to the server"
 
@@ -46,8 +47,12 @@ if(inDenmark):
             "systolic": int(systolic)      # Convert to integer
         }
         response = sendInfo(measurementDto)
-        print("Response:", response)  # Print out the response received from the server
-        print("Measurement sent")
+        if(response.status_code == 200):
+            print(response.text)
+            st.success("Measurement sent successfully")
+        else:
+            print(response.text)
+            st.error("An error occurred while sending the measurement")
 else:
     st.write("You are not in Denmark, you cannot send measurements")
 
