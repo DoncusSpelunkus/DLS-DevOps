@@ -7,6 +7,20 @@ services:
       - featurehub-h2-data:/db
     ports:
       - "8085:8085"
+  seq: 
+    image: datalust/seq
+    ports:
+      - "5341:5341"
+      - "4342:80"
+    volumes:
+      - rps_seq_data1:/data
+    environment:
+      - ACCEPT_EULA=Y
+  
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
 
   test:
     build:
@@ -26,7 +40,7 @@ services:
       - "8081:8081"
     depends_on:
       - featurehub
-      
+
   MeasurementService:
     image: measurement-service
     build:
@@ -36,7 +50,9 @@ services:
       - "8082:8082"
     depends_on:
       - featurehub
-    
+      - zipkin
+      - seq
+
   sql-server:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sql-server
@@ -50,5 +66,4 @@ services:
 
 volumes:
   featurehub-h2-data:
-  
-  
+  rps_seq_data1:

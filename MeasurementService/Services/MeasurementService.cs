@@ -1,72 +1,66 @@
-﻿
+﻿using AutoMapper;
 using DefaultNamespace;
-
+using OpenTelemetry.Trace;
 
 namespace MeasurementService
 {
     public class MeasurementService : IMeasurementService
     {
-        private readonly IMeasurementRepo _measurementRepo; 
+        private readonly IMeasurementRepo _measurementRepo;
+        private readonly IMapper _mapper;
+        private readonly Tracer _tracer;
 
-        public MeasurementService(IMeasurementRepo measurementRepo)
+        public MeasurementService(IMeasurementRepo measurementRepo, IMapper mapper, Tracer tracer)
         {
             _measurementRepo = measurementRepo;
+            _mapper = mapper;
+            _tracer = tracer;
         }
 
-        public async Task<Measurement> GetMeasurementById(int id, string ssn)
+        public async Task<Measurement?> GetMeasurementById(int id)
         {
-            
-            if (!await IsPatientSsnCorrect(id, ssn))
-            {
-                throw new ArgumentException("Invalid SSN provided for the measurement.");
-            }
-            
-            return await _measurementRepo.GetMeasurementById(id);
+            using var activity = _tracer.StartActiveSpan("GetMeasurementByIdInService");
+            var measurement = await _measurementRepo.GetMeasurementById(id);
+            return measurement;
         }
 
         public async Task<List<Measurement>> GetAllMeasurement(string ssn)
         {
-            if (!await IsPatientSsnCorrect(ssn))
-            {
-                throw new ArgumentException("Invalid SSN provided for the measurements.");
-            }
-       
-            return await _measurementRepo.GetAllMeasurement();
+            using var activity = _tracer.StartActiveSpan("GetAllMeasurementInService");
+            var measurements = await _measurementRepo.GetAllMeasurement(ssn);
+            return measurements;
         }
 
-        private async Task<bool> IsPatientSsnCorrect(int id, string ssn)
+        public async Task<Measurement?> CreateMeasurement(MeasurementDto measurementDto)
         {
-          
-            var measurement = await _measurementRepo.GetMeasurementById(id);
-            return measurement != null && measurement.PatientSsn == ssn;
+            using var activity = _tracer.StartActiveSpan("CreateMeasurementInService");
+            var measurement = _mapper.Map<Measurement>(measurementDto);
+            measurement.Date = DateTime.Now;
+            var createdMeasurement = await _measurementRepo.CreateMeasurement(measurement);
+            return createdMeasurement;
         }
 
-        private async Task<bool> IsPatientSsnCorrect(string ssn)
+        public async Task DeleteMeasurement(int id)
         {
-            var measurements = await _measurementRepo.GetMeasurementsBySsn(ssn);
-            return measurements is { Count: > 0 };
-        }
-        
-        public Task<Measurement?> CreateMeasurement(Measurement measurement)
-        {
-            return _measurementRepo.CreateMeasurement(measurement);
+            using var activity = _tracer.StartActiveSpan("DeleteMeasurementInService");
+            await _measurementRepo.DeleteMeasurement(id);
+  
         }
 
-        public Task DeleteMeasurement(int id)
+        public async Task<Measurement?> UpdateMeasurement(MeasurementDto measurementDto, int id)
         {
-            return _measurementRepo.DeleteMeasurement(id);
+            using var activity = _tracer.StartActiveSpan("UpdateMeasurementInService");
+            var currentMeasurement = await _measurementRepo.GetMeasurementById(id);
+            currentMeasurement.Diastolic = measurementDto.Diastolic;
+            currentMeasurement.Systolic = measurementDto.Systolic;
+            await _measurementRepo.UpdateMeasurement(currentMeasurement);
+            return currentMeasurement;
         }
 
-        public Task<Measurement?> UpdateMeasurement(Measurement measurement)
-        {
-            return _measurementRepo.UpdateMeasurement(measurement);
-        }
-        
         public void RebuildDb()
         {
+            using var activity = _tracer.StartActiveSpan("RebuildDbInService");
             _measurementRepo.RebuildDb();
         }
-        
-        
     }
 }
