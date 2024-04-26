@@ -2,10 +2,18 @@ using AutoMapper;
 using DefaultNamespace;
 using MeasurementService;
 using Microsoft.EntityFrameworkCore;
+using Monitoring;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseUrls("http://0.0.0.0:8082");
+var serviceName = "MeasurementService";
+var serviceVersion = "1.0.0";
+
+builder.Services.AddOpenTelemetry().Setup(serviceName, serviceVersion);
+builder.Services.AddSingleton(TracerProvider.Default.GetTracer(serviceName));
+
 builder.Services.AddDbContext<MeasurementDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MeasurementDb")));
 builder.Services.AddEndpointsApiExplorer();

@@ -24,6 +24,7 @@ public class PatientRepository : IPatientRepository
         }
         catch (Exception e)
         {
+            Monitoring.Monitoring.Log.Error("Unable to Create patient in repo.");
             throw new Exception("Something went wrong when creating a new Patients" + e.Message);
         }
     }
@@ -39,6 +40,7 @@ public class PatientRepository : IPatientRepository
         }
         catch (Exception e)
         {
+            Monitoring.Monitoring.Log.Error("Unable to GetPatientById in repo.");
             throw new Exception("Something went wrong when deleting Patients with id: " +id + e.Message);
             
         }
@@ -56,6 +58,7 @@ public class PatientRepository : IPatientRepository
         }
         catch (Exception e)
         {
+            Monitoring.Monitoring.Log.Error("Unable to Delete patient in repo.");
             throw new Exception("Something went wrong when deleting Patients with id: " +id + e.Message);
             
         }
@@ -79,6 +82,7 @@ public class PatientRepository : IPatientRepository
         }
         catch (Exception e)
         {
+            Monitoring.Monitoring.Log.Error("Unable to update patient in repo.");
             throw new Exception("Something went wrong when updating Patients: "  + e.Message);
         }
     }
@@ -93,6 +97,7 @@ public class PatientRepository : IPatientRepository
         }
         catch (Exception e)
         {
+            Monitoring.Monitoring.Log.Error("Unable to GetAllPatients in repo.");
             throw new Exception("Something went wrong when getting a list of all Patients: "  + e.Message);
         }
     }
@@ -107,6 +112,7 @@ public class PatientRepository : IPatientRepository
         }
         catch (Exception e)
         {
+            Monitoring.Monitoring.Log.Error("Unable to RebuildDb in repo.");
             throw new Exception(e.Message);
         }
 
