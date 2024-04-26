@@ -1,21 +1,25 @@
 ﻿using DefaultNamespace;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Trace;
 
 namespace MeasurementService
 {
     public class MeasurementRepo : IMeasurementRepo
     {
         private readonly MeasurementDbContext _measurementDbContext;
+        private readonly Tracer _tracer;
         
-        public MeasurementRepo(MeasurementDbContext measurementDbContext)
+        public MeasurementRepo(MeasurementDbContext measurementDbContext, Tracer tracer)
         {
             _measurementDbContext = measurementDbContext;
+            _tracer = tracer;
         }
 
        public async Task<Measurement?> GetMeasurementById(int id)
         {
             try
             {
+                using var activity = _tracer.StartActiveSpan("GetMeasurementByIdInRepo");
                 var measurement =  await _measurementDbContext.MeasurementsTable.FindAsync(id);
                 if (measurement != null)
                 {
@@ -26,6 +30,7 @@ namespace MeasurementService
             }
             catch (Exception e)
             {
+                Monitoring.Monitoring.Log.Error("Unable to GetMeasurementById in repo.");
                 throw new Exception("Something went wrong when getting measurement by ID: " + e.Message);
             }
         }
@@ -35,6 +40,7 @@ namespace MeasurementService
         {
             try
             {
+                using var activity = _tracer.StartActiveSpan("GetAllMeasurementInRepo");
                 var measurements = await _measurementDbContext.MeasurementsTable.Where(m => m.PatientSsn == ssn).ToListAsync();
 
                 foreach (var measurement in measurements)
@@ -48,6 +54,7 @@ namespace MeasurementService
             }
             catch (Exception e)
             {
+                Monitoring.Monitoring.Log.Error("Unable to GetAllMeasurement in repo.");
                 throw new Exception("Something went wrong when getting all measurements: " + e.Message);
             }
         }
@@ -57,13 +64,14 @@ namespace MeasurementService
         {
             try
             {
+                using var activity = _tracer.StartActiveSpan("CreateMeasurementInRepo");
                 await _measurementDbContext.MeasurementsTable.AddAsync(measurement);
                 await _measurementDbContext.SaveChangesAsync();
                 return measurement;
             }
             catch (Exception e)
             {
-                Console.WriteLine("Inner Exception: " + e.InnerException.Message);
+                Monitoring.Monitoring.Log.Error("Unable to CreateMeasurement in repo.");
                 throw new Exception("Something went wrong when creating a new measurement: " + e.Message);
             }
         }
@@ -72,12 +80,14 @@ namespace MeasurementService
         {
             try
             {
+                using var activity = _tracer.StartActiveSpan("DeleteMeasurementInRepo");
                 var measurement = await _measurementDbContext.MeasurementsTable.FindAsync(id) ?? throw new KeyNotFoundException("No such measurement found");
                 _measurementDbContext.MeasurementsTable.Remove(measurement);
                 await _measurementDbContext.SaveChangesAsync();
             }
             catch (Exception e)
             {
+                Monitoring.Monitoring.Log.Error("Unable to DeleteMeasurementInRepo.");
                 throw new Exception("Something went wrong when deleting measurement with ID: " + id + ". " + e.Message);
             }
         }
@@ -86,6 +96,7 @@ namespace MeasurementService
         {
             try
             {
+                using var activity = _tracer.StartActiveSpan("UpdateMeasurementInRepo");
                 var existingMeasurement = await _measurementDbContext.MeasurementsTable.FindAsync(measurement.Id);
                 if (existingMeasurement == null)
                 {
@@ -101,6 +112,7 @@ namespace MeasurementService
             }
             catch (Exception e)
             {
+                Monitoring.Monitoring.Log.Error("Unable to UpdateMeasurement in repo.");
                 throw new Exception("Something went wrong when updating measurement: " + e.Message);
             }
         }
@@ -110,11 +122,13 @@ namespace MeasurementService
         {
             try
             {
+                using var activity = _tracer.StartActiveSpan("RebuildDbInRepo");
                 _measurementDbContext.Database.EnsureDeleted();
                 _measurementDbContext.Database.EnsureCreated();
             }
             catch (Exception e)
             {
+                Monitoring.Monitoring.Log.Error("Unable to RebuildDb in repo.");
                 throw new Exception("Something went wrong when rebuilding the database: " + e.Message);
             }
         }
