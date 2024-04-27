@@ -93,7 +93,7 @@ public class PatientController : ControllerBase
     [HttpPost("RebuildDb")]
     public IActionResult RebuildDb()
     {
-        using var activity = _tracer.StartActiveSpan("RebuildDbInPatientController");
+        
         _patientService.RebuildDb();
         return Ok("Database rebuilt successfully.");
     }

@@ -122,13 +122,11 @@ namespace MeasurementService
         {
             try
             {
-                using var activity = _tracer.StartActiveSpan("RebuildDbInRepo");
                 _measurementDbContext.Database.EnsureDeleted();
                 _measurementDbContext.Database.EnsureCreated();
             }
             catch (Exception e)
             {
-                Monitoring.Monitoring.Log.Error("Unable to RebuildDb in repo.");
                 throw new Exception("Something went wrong when rebuilding the database: " + e.Message);
             }
         }

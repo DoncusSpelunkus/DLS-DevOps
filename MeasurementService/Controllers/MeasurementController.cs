@@ -12,30 +12,28 @@ namespace MeasurementService.Controllers
     {
         private readonly IMeasurementService _measurementService;
         private readonly Tracer _tracer;
-
         private readonly IFeatureHubContext _featureHubContext;
 
         public MeasurementController(
             IMeasurementService measurementService,
-            IFeatureHubContext featureHubContext
-        )
+            IFeatureHubContext featureHubContext, Tracer tracer)
         {
             _measurementService = measurementService;
             _featureHubContext = featureHubContext;
+            _tracer = tracer;
         }
 
         [HttpGet("GetAll/{ssn}")]
         public async Task<IActionResult> GetAllMeasurements(string ssn)
-        {
+        { 
+            
             var enabled = await getDeploymentToggle();
             if (!enabled)
             {
                 return BadRequest("Feature is disabled");
             }
 
-            using var activity = _tracer.StartActiveSpan(
-                "GetAllMeasurementsInMeasurementController"
-            );
+            using var activity = _tracer.StartActiveSpan("GetAllMeasurementsInMeasurementController");
 
             var measurements = await _measurementService.GetAllMeasurement(ssn);
             if (measurements == null)
@@ -99,7 +97,7 @@ namespace MeasurementService.Controllers
                 {
                     return BadRequest("Feature is disabled");
                 }
-
+                
                 var createdMeasurement = await _measurementService.CreateMeasurement(
                     measurementDto
                 );
@@ -123,20 +121,20 @@ namespace MeasurementService.Controllers
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> UpdateMeasurement(MeasurementDto measurementDto, int id)
         {
+            
             var enabled = await getDeploymentToggle();
             if (!enabled)
             {
                 return BadRequest("Feature is disabled");
             }
-
+            
             var updatedMeasurement = await _measurementService.UpdateMeasurement(
                 measurementDto,
                 id
             );
 
-            using var activity = _tracer.StartActiveSpan(
-                "UpdateMeasurementInMeasurementController"
-            );
+            using var activity = _tracer.StartActiveSpan("UpdateMeasurementInMeasurementController");
+            
             if (updatedMeasurement == null)
             {
                 Monitoring.Monitoring.Log.Error(

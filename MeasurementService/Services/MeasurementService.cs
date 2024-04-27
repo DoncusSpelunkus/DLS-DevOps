@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DefaultNamespace;
+using Newtonsoft.Json;
 using OpenTelemetry.Trace;
 
 namespace MeasurementService
@@ -9,15 +10,18 @@ namespace MeasurementService
         private readonly IMeasurementRepo _measurementRepo;
         private readonly IMapper _mapper;
         private readonly Tracer _tracer;
+        private readonly HttpClient _httpClient;
+       
 
-        public MeasurementService(IMeasurementRepo measurementRepo, IMapper mapper, Tracer tracer)
+        public MeasurementService(IMeasurementRepo measurementRepo, IMapper mapper, Tracer tracer, HttpClient httpClient)
         {
             _measurementRepo = measurementRepo;
             _mapper = mapper;
             _tracer = tracer;
+            _httpClient = httpClient;
         }
 
-        public async Task<Measurement?> GetMeasurementById(int id)
+        public async Task<Measurement> GetMeasurementById(int id)
         {
             using var activity = _tracer.StartActiveSpan("GetMeasurementByIdInService");
             var measurement = await _measurementRepo.GetMeasurementById(id);
@@ -26,10 +30,28 @@ namespace MeasurementService
 
         public async Task<List<Measurement>> GetAllMeasurement(string ssn)
         {
+            
             using var activity = _tracer.StartActiveSpan("GetAllMeasurementInService");
-            var measurements = await _measurementRepo.GetAllMeasurement(ssn);
-            return measurements;
+            
+            var requestUrl = "GetById/"+ssn; 
+            
+                using var httpResponse = await _httpClient.GetAsync("http://dls-devops-PatientService-1:8081/Patient/" + requestUrl);
+                
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                    var patient = JsonConvert.DeserializeObject<Patient>(responseContent);
+                    
+                    if (patient?.Ssn == ssn)
+                    {
+                        var measurements = await _measurementRepo.GetAllMeasurement(ssn);
+                        return measurements;
+                    }
+                }
+                Monitoring.Monitoring.Log.Error("Unable to GetAllMeasurement in service.");
+                throw new Exception("No such patient with this ssn:" + ssn);
         }
+
 
         public async Task<Measurement?> CreateMeasurement(MeasurementDto measurementDto)
         {
@@ -59,7 +81,6 @@ namespace MeasurementService
 
         public void RebuildDb()
         {
-            using var activity = _tracer.StartActiveSpan("RebuildDbInService");
             _measurementRepo.RebuildDb();
         }
     }

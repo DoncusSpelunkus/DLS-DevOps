@@ -21,6 +21,7 @@ builder.Services.AddScoped<IPatientService, PatientService>();
 
 builder.Services.AddDbContext<PatientDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PatientDb")));
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();

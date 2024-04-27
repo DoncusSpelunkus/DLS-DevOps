@@ -36,7 +36,6 @@ public class PatientRepository : IPatientRepository
             using var activity = _tracer.StartActiveSpan("GetPatientById in the repo");
             var patient = await _patientDbContext.PatientsTable!.FindAsync(id) ?? throw new KeyNotFoundException("No such patient found");
             return patient;
-
         }
         catch (Exception e)
         {
@@ -106,13 +105,11 @@ public class PatientRepository : IPatientRepository
     {
         try
         {
-            using var activity = _tracer.StartActiveSpan("RebuildDb in the repo");
             _patientDbContext.Database.EnsureDeleted();
             _patientDbContext.Database.EnsureCreated();
         }
         catch (Exception e)
         {
-            Monitoring.Monitoring.Log.Error("Unable to RebuildDb in repo.");
             throw new Exception(e.Message);
         }
 

@@ -14,6 +14,10 @@ var serviceVersion = "1.0.0";
 builder.Services.AddOpenTelemetry().Setup(serviceName, serviceVersion);
 builder.Services.AddSingleton(TracerProvider.Default.GetTracer(serviceName));
 
+builder.Services.AddHttpClient("HttpClient", client =>
+{
+    client.BaseAddress = new Uri("http://dls-devops-PatientService-1:8081/");
+});
 builder.Services.AddDbContext<MeasurementDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MeasurementDb")));
 builder.Services.AddEndpointsApiExplorer();
@@ -27,8 +31,6 @@ builder.Services.AddSingleton<IFeatureHubContext, FeatureHubContextService>();
 builder.Services.AddScoped<IMeasurementRepo, MeasurementRepo>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService.MeasurementService>();
 
-builder.Services.AddDbContext<MeasurementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MeasurementDb")));
 var app = builder.Build();
 
 app.UseHttpsRedirection();
