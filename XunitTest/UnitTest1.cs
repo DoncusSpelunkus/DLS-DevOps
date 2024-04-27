@@ -27,7 +27,7 @@ namespace XunitTest
                 Ssn = "123456789", // Example SSN
                 Mail = "example@example.com", // Example email
                 Name = "John Doe", // Example name
-                Measurements = new List<Measurement>() // Assuming you have a Measurement class
+                measurements = new List<Measurement>() // Assuming you have a Measurement class
             };
 
             patientRepositoryMock
@@ -55,7 +55,7 @@ namespace XunitTest
                 Ssn = "123456789", // Example SSN
                 Mail = "lmao.dk", // Example email
                 Name = "John Doe", // Example name
-                Measurements = new List<Measurement>() // Assuming you have a Measurement class
+                measurements = new List<Measurement>() // Assuming you have a Measurement class
             };
 
             patientRepositoryMock
@@ -83,14 +83,14 @@ namespace XunitTest
                     Ssn = "123456789",
                     Mail = "example1@example.com",
                     Name = "John Doe",
-                    Measurements = new List<Measurement>()
+                    measurements = new List<Measurement>()
                 },
                 new Patient
                 {
                     Ssn = "987654321",
                     Mail = "example2@example.com",
                     Name = "Jane Smith",
-                    Measurements = new List<Measurement>()
+                    measurements = new List<Measurement>()
                 },
                 // Add more patients as needed
             };
