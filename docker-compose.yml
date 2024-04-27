@@ -74,6 +74,15 @@ services:
     environment:
       - STREAMLIT_SERVER_PORT=8501
 
+  doctor-app:
+    build:
+      context: .
+      dockerfile: DoctorFront/Dockerfile
+    ports:
+      - "8502:8502"
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+
 volumes:
   featurehub-h2-data:
   rps_seq_data1:
