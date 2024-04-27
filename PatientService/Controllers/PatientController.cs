@@ -1,8 +1,8 @@
-﻿using DefaultNamespace;
+﻿using System.Threading.Tasks;
+using DefaultNamespace;
 using Microsoft.AspNetCore.Mvc;
-using PatientServices;
 using OpenTelemetry.Trace;
-using System.Threading.Tasks;
+using PatientServices;
 
 [Route("[controller]")]
 public class PatientController : ControllerBase
@@ -11,7 +11,11 @@ public class PatientController : ControllerBase
     private readonly IFeatureHubContext _featureHubContext;
     private readonly Tracer _tracer;
 
-    public PatientController(IPatientService patientService, IFeatureHubContext featureHubContext, Tracer tracer)
+    public PatientController(
+        IPatientService patientService,
+        IFeatureHubContext featureHubContext,
+        Tracer tracer
+    )
     {
         _patientService = patientService;
         _featureHubContext = featureHubContext;
@@ -22,6 +26,7 @@ public class PatientController : ControllerBase
     public async Task<IActionResult> GetPatients()
     {
         using var activity = _tracer.StartActiveSpan("GetPatientsInPatientController");
+
         var featureHubContext = await _featureHubContext.GetFeatureHubContextAsync();
         return Ok(featureHubContext["Test"].IsEnabled);
     }
@@ -88,7 +93,7 @@ public class PatientController : ControllerBase
     [HttpPost("RebuildDb")]
     public IActionResult RebuildDb()
     {
-        using var activity = _tracer.StartActiveSpan("RebuildDbInPatientController");
+        
         _patientService.RebuildDb();
         return Ok("Database rebuilt successfully.");
     }
