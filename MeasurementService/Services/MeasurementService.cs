@@ -56,17 +56,32 @@ namespace MeasurementService
         public async Task<Measurement?> CreateMeasurement(MeasurementDto measurementDto)
         {
             using var activity = _tracer.StartActiveSpan("CreateMeasurementInService");
-            var measurement = _mapper.Map<Measurement>(measurementDto);
-            measurement.Date = DateTime.Now;
-            var createdMeasurement = await _measurementRepo.CreateMeasurement(measurement);
-            return createdMeasurement;
+
+            var requestUrl = "GetById/" + measurementDto.PatientSsn;
+
+            using var httpResponse =
+                await _httpClient.GetAsync("http://dls-devops-PatientService-1:8081/Patient/" + requestUrl);
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                var patient = JsonConvert.DeserializeObject<Patient>(responseContent);
+
+                if (patient?.Ssn == measurementDto.PatientSsn)
+                {
+                    var measurement = _mapper.Map<Measurement>(measurementDto);
+                    measurement.Date = DateTime.Now;
+                    var createdMeasurement = await _measurementRepo.CreateMeasurement(measurement);
+                    return createdMeasurement;
+                }
+            }
+            Monitoring.Monitoring.Log.Error("Unable to CreateMeasurement in service.");
+            throw new Exception("No such patient with this ssn:" + measurementDto.PatientSsn);
         }
 
         public async Task DeleteMeasurement(int id)
         {
             using var activity = _tracer.StartActiveSpan("DeleteMeasurementInService");
             await _measurementRepo.DeleteMeasurement(id);
-  
         }
 
         public async Task<Measurement?> UpdateMeasurement(MeasurementDto measurementDto, int id)
