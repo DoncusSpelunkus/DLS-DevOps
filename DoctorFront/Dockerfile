@@ -9,6 +9,7 @@ ENV PYTHONUNBUFFERED=1
 
 RUN pip install streamlit
 RUN pip install requests
+RUN pip install pandas
 
 WORKDIR /app
 COPY . /app

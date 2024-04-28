@@ -114,7 +114,7 @@ namespace MeasurementService.Controllers
             catch (Exception e)
             {
                 Monitoring.Monitoring.Log.Error("something went wrong in MeasurementController." + e.Message);
-                return BadRequest("Invalid country code");
+                return BadRequest(e.Message);
             }
         }
 
