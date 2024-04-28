@@ -143,7 +143,9 @@ delete = st.text_input("Delete a patient by entering the SSN")
 if st.button("Delete patient"):
     deletePatient(delete)
 
-st.header("Get measurements for a patient", divider="rainbow")
+st.header("Measurement Management", divider="rainbow")
+
+st.subheader("Get measurements for a patient", divider="gray")
 
 patientSnn = st.text_input("Enter patient SSN to get measurements")
           
@@ -154,7 +156,7 @@ if st.button("Get measurements"):
 if st.session_state.measurements.empty:
     st.write("No measurements found")
 else:
-    st.subheader("Select Measurement:")
+    st.subheader("Edit measurements:", divider="gray")
     
     measurements = st.session_state.measurements
     
